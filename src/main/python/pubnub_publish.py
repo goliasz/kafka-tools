@@ -43,7 +43,7 @@ if __name__ == '__main__':
   parser.add_argument('--kafka_bootstrap_srvs', default="localhost:9092")
   parser.add_argument('--kafka_group_id', default="snowplow_k2c")
   parser.add_argument('--kafka_source_topic', default="snowplow-enriched-good-json")
-
+  parser.add_argument('--key_exists', default="out")
 
   args = parser.parse_args()
   print "PUBNUB Sub Key:",args.pubnub_subkey
@@ -52,6 +52,7 @@ if __name__ == '__main__':
   print "Kafka boostrap servers",args.kafka_bootstrap_srvs
   print "Kafka group id",args.kafka_group_id
   print "Kafka source topic",args.kafka_source_topic
+  print "Key exists condition:",args.key_exists
 
   #
   consumer = KafkaConsumer(bootstrap_servers=args.kafka_bootstrap_srvs, group_id=args.kafka_group_id)
@@ -63,5 +64,10 @@ if __name__ == '__main__':
     key = str(uuid.uuid4())
     msgj = json.loads(msg.value)
     #print msgj
-    print "Write to pubnub"
-    pubnub.publish(args.pubnub_channel, msgj, error=callback)
+    if args.key_exists:
+      if msgj.get(args.key_exists):
+        print "Write to pubnub"
+        pubnub.publish(args.pubnub_channel, msgj, error=callback)
+    else:
+      print "Write to pubnub"
+      pubnub.publish(args.pubnub_channel, msgj, error=callback)
