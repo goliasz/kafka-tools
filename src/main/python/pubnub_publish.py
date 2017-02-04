@@ -60,14 +60,23 @@ if __name__ == '__main__':
 
   pubnub = Pubnub(publish_key=args.pubnub_pubkey, subscribe_key=args.pubnub_subkey)
   
+  counter = 0
   for msg in consumer:
     key = str(uuid.uuid4())
     msgj = json.loads(msg.value)
-    print msgj
+    #print msgj
+    #print counter
     if args.key_exists and len(args.key_exists)>0:
       if msgj.get(args.key_exists):
         print "Write to pubnub"
         pubnub.publish(args.pubnub_channel, msgj, error=callback)
     else:
-      print "Write to pubnub"
-      pubnub.publish(args.pubnub_channel, msgj, error=callback)
+      if counter > 0:
+        print "Write to pubnub",counter
+        pubnub.publish(args.pubnub_channel, msgj, error=callback)
+        counter -= 1
+      src = msgj.get("src")
+      if src:
+        if src.get("cmd"):
+          if src.get("cmd") == "pubnub_reset":
+            counter = 1000
