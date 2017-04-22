@@ -35,13 +35,12 @@ def save():
   for msg in consumer:
     #
     indata = json.loads(msg.value)
-    #print indata
-    #
-    #today = str(datetime.today())[0:10]
+    print indata
     #
     #print today
     #
     myid = str(uuid.uuid4())
+    #print myid
     #
     es.index(index=args.elastic_index,doc_type=args.elastic_doc_type,id=myid, body=indata)
 
@@ -49,13 +48,12 @@ def save():
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description="Backup topic")
   parser.add_argument('--kafka_bootstrap_srvs', default="localhost:9092")
-  parser.add_argument('--kafka_group_id', default="backup_topic")
-  parser.add_argument('--kafka_source_topic', default="btc_rates2")
+  parser.add_argument('--kafka_group_id', default="kafka2elastic")
+  parser.add_argument('--kafka_source_topic', default="enriched-good-json")
   parser.add_argument('--elastic_url', default="localhost:9200")
   parser.add_argument('--elastic_index', default="good")
   parser.add_argument('--elastic_doc_type', default="good")
 
-  #parser.add_argument('--target_file', default="btc_rates2")
   #
   args = parser.parse_args()
   #
