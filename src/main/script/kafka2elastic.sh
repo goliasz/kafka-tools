@@ -13,6 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-src/main/python/kafka2elastic.py --kafka_bootstrap_srvs=ip-172-31-11-245.eu-west-2.compute.internal:9092
+src/main/python/kafka2elastic.py --kafka_bootstrap_srvs=ip-172-31-11-245.eu-west-2.compute.internal:9092 --kafka_source_topic=enriched-good-json-ce
 
 

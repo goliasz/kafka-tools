@@ -33,16 +33,21 @@ def save():
   es = Elasticsearch(args.elastic_url)
 
   for msg in consumer:
-    #
-    indata = json.loads(msg.value)
-    print indata
-    #
-    #print today
-    #
-    myid = str(uuid.uuid4())
-    #print myid
-    #
-    es.index(index=args.elastic_index,doc_type=args.elastic_doc_type,id=myid, body=indata)
+    try: 
+      #
+      indata = json.loads(msg.value)
+      #print indata
+      print len(msg.value)
+      #
+      myid = str(uuid.uuid4())
+      print myid
+      #
+      if len(msg.value) < 100000:
+        es.index(index=args.elastic_index,doc_type=args.elastic_doc_type,id=myid, body=indata)
+      else:
+        print "We have big doc! Skipping!"
+    except Exception,Argument:
+      print "Error:",Argument
 
 
 if __name__ == '__main__':
@@ -56,6 +61,7 @@ if __name__ == '__main__':
 
   #
   args = parser.parse_args()
+  print args
   #
   save()
 
